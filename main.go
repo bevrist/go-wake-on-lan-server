@@ -111,7 +111,7 @@ func main() {
 	})
 
 	fmt.Println("Starting Server. broadcasting on: " + broadcastIP + ", sharedKey is: " + sharedKey)
-	http.ListenAndServe(":3333", router)
+	fmt.Println(http.ListenAndServe(":"+listenPort, router))
 }
 
 // wakeOnLan sends a magic packet to the provided mac address
