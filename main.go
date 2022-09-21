@@ -16,9 +16,9 @@ import (
 	"github.com/mdlayher/wol"
 )
 
-var macAddrRegex *regexp.Regexp
+var macAddrRegex, ipAddrRegex *regexp.Regexp
 
-var broadcastIP string = "192.168.1.0"
+var broadcastIP string
 var sharedKey string = "DefaultPassword"
 var listenPort string = "80"
 
@@ -30,12 +30,11 @@ func main() {
 	if os.Getenv("LISTEN_PORT") != "" {
 		listenPort = os.Getenv("LISTEN_PORT")
 	}
-	if os.Getenv("BROADCAST_IP") != "" {
-		broadcastIP = os.Getenv("BROADCAST_IP")
-	}
 
 	macAddrRegex = regexp.MustCompile(`^([0-9A-Fa-f]{2}[:-]){5}([0-9A-Fa-f]{2})$`)
+	ipAddrRegex = regexp.MustCompile(`^(\d+\.\d+\.\d+\.)\d+$`)
 
+	broadcastIP = GetBroadcastIP()
 	router := chi.NewRouter()
 
 	// A good base middleware stack
@@ -112,7 +111,6 @@ func main() {
 	})
 
 	fmt.Println("Starting Server. broadcasting on: " + broadcastIP + ", sharedKey is: " + sharedKey)
-	// wakeOnLan("40:8d:5c:71:b3:a3")
 	fmt.Println(http.ListenAndServe(":"+listenPort, router))
 }
 
@@ -131,6 +129,18 @@ func wakeOnLan(macAddr string) {
 	if err != nil {
 		log.Fatal(err)
 	}
+}
+
+// GetBroadcastIP gets preferred outbound ip address
+func GetBroadcastIP() string {
+	conn, err := net.Dial("udp", "1.1.1.1:80")
+	if err != nil {
+		log.Fatal(err)
+	}
+	defer conn.Close()
+	localAddr := conn.LocalAddr().(*net.UDPAddr)
+	ipnet := ipAddrRegex.FindStringSubmatch(localAddr.IP.String())
+	return ipnet[1] + "0"
 }
 
 var loginPage string = `
