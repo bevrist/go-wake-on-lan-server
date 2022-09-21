@@ -67,7 +67,7 @@ func main() {
 
 	router.Post("/login", func(w http.ResponseWriter, r *http.Request) {
 		//validate shared key entry
-		userSharedKey := r.FormValue("shared-key")
+		userSharedKey := r.FormValue("password")
 		if userSharedKey != sharedKey {
 			//delete cookie
 			http.SetCookie(w, &http.Cookie{Name: "shared-key", MaxAge: -1})
@@ -146,8 +146,8 @@ func GetBroadcastIP() string {
 var loginPage string = `
 <h1>Login</h1>
 <form method="POST">
-		<label>shared-key:</label><br />
-		<input type="text" name="shared-key"><br />
+		<label for="password">password:</label><br />
+		<input type="password" name="password"><br />
 		<input type="submit">
 </form>
 {{if .Success}}
