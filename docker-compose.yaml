@@ -1,0 +1,8 @@
+services:
+  a:
+    build: .
+    restart: always
+    environment:
+      - SHARED_KEY=DefaultPassword
+    ports:
+      - "80:80"
