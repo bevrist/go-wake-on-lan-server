@@ -144,16 +144,24 @@ func GetBroadcastIP() string {
 }
 
 var loginPage string = `
-<h1>Login</h1>
-<form method="POST">
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0" />
+</head>
+<body>
+	<h1>Login</h1>
+	<form method="POST">
 		<label for="password">password:</label><br />
 		<input type="password" name="password"><br />
 		<input type="submit">
-</form>
-{{if .Success}}
-<h2>Logged In.</h2>
-{{end}}
-{{if .Failure}}
-<h2>Login Failed</h2>
-{{end}}
+	</form>
+	{{if .Success}}
+	<h2>Logged In.</h2>
+	{{end}}
+	{{if .Failure}}
+	<h2>Login Failed</h2>
+	{{end}}
+</body>
+</html>
 `
